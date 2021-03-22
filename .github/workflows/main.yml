@@ -18,7 +18,7 @@ jobs:
       - name: Push to GitHub Packages
         uses: docker/build-push-action@v1
         with:
-          username: ${{ github.DOCKERHUB_ID }}
+          username: ${{ secrets.DOCKERHUB_ID }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
           registry: docker.pkg.github.com
           repository: kamilmachonhsrn/test
