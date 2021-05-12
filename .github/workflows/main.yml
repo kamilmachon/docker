@@ -20,7 +20,7 @@ jobs:
         uses: actions/checkout@v2
     -
         name: coompress sources
-        run: cd /home/runner/work/docker/docker && tar -czvf .  /home/runner/source.tar.gz 
+        run: cd /home/runner/work/docker/docker && tar -czvf /home/runner/source.tar.gz *  
     -
       name: debug
       run: ls ~/ && pwd
