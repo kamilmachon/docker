@@ -11,8 +11,8 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
       with:
-        tag_name: kek22222
-        release_name: kek22222
+        tag_name: kek22d222
+        release_name: kek22222d
         draft: false
         prerelease: false
     - 
@@ -23,7 +23,7 @@ jobs:
         run: tar -czvf ~/source.tar.gz ${{ github.workspace }}/* 
     -
       name: debug
-      run: ls ~/
+      run: ls ~/ && pwd
     
     - uses: actions/upload-release-asset@v1.0.1
       env:
