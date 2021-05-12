@@ -11,8 +11,8 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
       with:
-        tag_name: kek2
-        release_name: kek2
+        tag_name: kek22
+        release_name: kek22
         draft: false
         prerelease: false
     - 
