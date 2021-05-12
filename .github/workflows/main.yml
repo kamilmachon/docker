@@ -1,36 +1,61 @@
 name: Publish Docker image
-on: 
-  workflow_dispatch:
-    inputs:
-      logLevel:
-        description: 'Log level'     
-        required: true
-        default: 'warning'
-      tags:
-        description: 'Test scenario tags'  
+on: [push]
+ 
 jobs:
-  push_to_registry:
-    name: Push Docker image to Docker Hub
+  release:
     runs-on: ubuntu-latest
     steps:
-      - name: Check out the repo
-        uses: actions/checkout@v2
-      - name: Push to Docker Hub
-        uses: docker/build-push-action@v1
-        with:
-          username: ${{ secrets.DOCKERHUB_ID }}
-          password: ${{ secrets.DOCKERHUB_PASSWORD }}
-          repository: kamilmachonhsrn/test
-          tag_with_ref: true
-  hello_world_job:
-    runs-on: ubuntu-latest
-    name: A job to say hello
-    steps:
-    - name: Hello world action step
-      id: hello
-      uses:  kamilmachon/docker/custom_action@v1
+    - name: Create Draft Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
       with:
-        who-to-greet: 'Mona the Octocat'
-    # Use the output from the `hello` step
-    - name: Get the output time
-      run: echo "The time was ${{ steps.hello.outputs.time }}"
+        tag_name: kek
+        release_name: kek
+        draft: false
+        prerelease: false
+
+    - uses: eregon/publish-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
+      with:
+        release_id: ${{ steps.create_release.outputs.id }}
+
+
+# name: Publish Docker image
+# on: 
+#   workflow_dispatch:
+#     inputs:
+#       logLevel:
+#         description: 'Log level'     
+#         required: true
+#         default: 'warning'
+#       tags:
+#         description: 'Test scenario tags'  
+# jobs:
+#   push_to_registry:
+#     name: Push Docker image to Docker Hub
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Check out the repo
+#         uses: actions/checkout@v2
+#       - name: Push to Docker Hub
+#         uses: docker/build-push-action@v1
+#         with:
+#           username: ${{ secrets.DOCKERHUB_ID }}
+#           password: ${{ secrets.DOCKERHUB_PASSWORD }}
+#           repository: kamilmachonhsrn/test
+#           tag_with_ref: true
+#   hello_world_job:
+#     runs-on: ubuntu-latest
+#     name: A job to say hello
+#     steps:
+#     - name: Hello world action step
+#       id: hello
+#       uses:  kamilmachon/docker/custom_action@v1
+#       with:
+#         who-to-greet: 'Mona the Octocat'
+#     # Use the output from the `hello` step
+#     - name: Get the output time
+#       run: echo "The time was ${{ steps.hello.outputs.time }}"
