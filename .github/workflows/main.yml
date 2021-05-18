@@ -1,85 +1,26 @@
 name: Publish Docker image
 on:
-  push:
-    tags:
-    - '*'
+  workflow_dispatch:
+    inputs:
+      target_branch_robo_cart:
+        description: 'robo_cart branch that will be used in build'
+        required: true
+        default: 'master'
     
 jobs:
   release:
     runs-on: ubuntu-latest
     steps:
-    - name: Set output
-      id: vars
-      run: echo ::set-output name=tag::${GITHUB_REF#refs/*/}
-    - name: Create Draft Release
-      id: create_release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
-      with:
-        tag_name: ${{ steps.vars.outputs.tag }}
-        release_name: ${{ steps.vars.outputs.tag }}
-        draft: false
-        prerelease: false
     - 
         name: Checkout repo
         uses: actions/checkout@v2
     -
-        name: coompress sources
-        run: cd /home/runner/work/docker/docker && tar -czvf /home/runner/source.tar.gz *  
+      name: get info
+      id: last-commit
+      uses: ./.github/actions/custom_action
+      with:
+        repo-path: .
     -
-      name: debug
-      run: ls ~/ && pwd
-    
-    - uses: actions/upload-release-asset@v1.0.1
-      env:
-        GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: /home/runner/source.tar.gz
-        asset_name: source.tar.gz
-        asset_content_type: application/zip
-
-    - uses: eregon/publish-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
-      with:
-        release_id: ${{ steps.create_release.outputs.id }}
-
-
-# name: Publish Docker image
-# on: 
-#   workflow_dispatch:
-#     inputs:
-#       logLevel:
-#         description: 'Log level'     
-#         required: true
-#         default: 'warning'
-#       tags:
-#         description: 'Test scenario tags'  
-# jobs:
-#   push_to_registry:
-#     name: Push Docker image to Docker Hub
-#     runs-on: ubuntu-latest
-#     steps:
-#       - name: Check out the repo
-#         uses: actions/checkout@v2
-#       - name: Push to Docker Hub
-#         uses: docker/build-push-action@v1
-#         with:
-#           username: ${{ secrets.DOCKERHUB_ID }}
-#           password: ${{ secrets.DOCKERHUB_PASSWORD }}
-#           repository: kamilmachonhsrn/test
-#           tag_with_ref: true
-#   hello_world_job:
-#     runs-on: ubuntu-latest
-#     name: A job to say hello
-#     steps:
-#     - name: Hello world action step
-#       id: hello
-#       uses:  kamilmachon/docker/custom_action@v1
-#       with:
-#         who-to-greet: 'Mona the Octocat'
-#     # Use the output from the `hello` step
-#     - name: Get the output time
-#       run: echo "The time was ${{ steps.hello.outputs.time }}"
+      name: print
+      run:  |
+        echo "prev action output " ${{ steps.last-commit.outputs.last-commit }}  

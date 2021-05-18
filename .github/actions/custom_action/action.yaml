@@ -1,0 +1,22 @@
+name: Get current repo state
+description: Get last commit info and output in as string argument.
+
+inputs:
+  repo-path:
+    required: false
+    default: .
+
+outputs:
+  last-commit:
+    description: Last commit info.
+    value: ${{ steps.last-commit.outputs.last-commit }}
+
+runs:
+  using: composite
+  steps:
+    -
+      id: get-last-commit
+      run: echo ::set-output name=last-commit::$( echo $(cd git log -1) )
+      shell: bash
+
+#${{ github.inputs.repo-path }} && 
